@@ -14,13 +14,14 @@ module.exports = {
       },
       colors: {
         'light': {
-          'primary': 'var(--light-primary)',
-          'secondary': 'var(--light-secondary)',
+          'primary': 'var(--primary)',
+          'secondary': 'var(--secondary)',
         },
         'dark': {
-          'primary': 'var(--dark-primary)',
-          'secondary': 'var(--dark-secondary)',
+          'primary': 'var(--primary)',
+          'secondary': 'var(--secondary)',
         },
+        accent: 'var(--accent)',
       },
     },
   },

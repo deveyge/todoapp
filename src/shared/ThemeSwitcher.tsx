@@ -13,7 +13,7 @@ export const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
       {isDark ? (
         <Sun className="h-6 w-6 text-yellow-500" />
       ) : (
-        <Moon className="h-6 w-6 text-green-600" />
+        <Moon className="h-6 w-6 text-[var(--primary)]" />
       )}
     </button>
   );
