@@ -11,6 +11,7 @@ module.exports = {
       backgroundColor: {
         'primary': 'var(--bg-primary)',
         'secondary': 'var(--bg-secondary)',
+        'foreground': 'var(--foreground)',
       },
       colors: {
         'light': {

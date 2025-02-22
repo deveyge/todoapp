@@ -8,7 +8,7 @@ function header() {
   const { theme } = UseTheme();
   const isDark = theme === "dark";
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-secondary py-1">
+    <header className="sticky top-0 z-50 w-full border-b bg-secondary py-1 dark:border-none">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to={"/"}>
           <h1 className="text-2xl font-bold text-[var(--primary)]">

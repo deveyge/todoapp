@@ -7,7 +7,7 @@
   :root {
     --bg-primary: #F7F8F8;
     --bg-secondary: #fafaf9;
-    --foreground: 0 0% 3.9%;
+    --foreground: #FFFFFF;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
@@ -36,9 +36,9 @@
     --font-family-base: 'Roboto Flex', sans-serif;
   }
   .dark {
-    --bg-primary: #0C0C0C;
-    --bg-secondary: #292524;
-    --foreground: 0 0% 98%;
+    --bg-primary: #0D0714;
+    --bg-secondary: #15101C;
+    --foreground: #15101C;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
