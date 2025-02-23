@@ -10,9 +10,9 @@ export default function MainPage() {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      await auth.signOut(); // Выходим из Firebase
-      dispatch(logout()); // Очищаем данные пользователя в Redux
-      navigate("/login"); // Перенаправляем на страницу логина
+      await auth.signOut();
+      dispatch(logout());
+      navigate("/login");
     } catch (error: any) {
       console.error("Logout failed:", error);
     }

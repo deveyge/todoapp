@@ -1,11 +1,24 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "redux/store";
+import { addTodo } from "redux/todoSlice";
 
 export default function AddTask() {
-  const [task, setTask] = useState("");
+  const [text, setText] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
+
+  const handleAddTask = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (text.trim() && user) {
+      dispatch(addTodo({ text: text.trim(), userId: user.uid }));
+      setText("");
+    }
+  };
 
   return (
     <>
-      <form action="#" method="POST" className="flex items-center gap-3">
+      <form onSubmit={handleAddTask} className="flex items-center gap-3">
         <div className="w-full">
           <input
             id="task"
@@ -13,14 +26,17 @@ export default function AddTask() {
             type="text"
             placeholder="Add a new todo"
             autoComplete="off"
-            value={task}
-            onChange={(e) => setTask(e.target.value)}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
             className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-black outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-[var(--primary)] sm:text-sm/6"
           />
         </div>
 
         <div>
-          <button className="shadow-xs hover:bg-accent flex w-full justify-center rounded-md bg-[var(--primary)] px-1.5 py-1.5 text-sm/6 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]">
+          <button
+            type="submit"
+            className="shadow-xs flex w-full justify-center rounded-md bg-[var(--primary)] px-1.5 py-1.5 text-sm/6 font-semibold text-white hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
+          >
             <svg
               width="22"
               height="22"
