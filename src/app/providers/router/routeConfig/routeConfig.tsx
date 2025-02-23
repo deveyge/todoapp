@@ -1,7 +1,8 @@
 import { LoginPage } from "pages/LoginPage";
 import { RegisterPage } from "pages/RegisterPage";
 import { MainPage } from "pages/MainPage";
-import { RouteProps } from "react-router-dom";
+import { Navigate, RouteProps } from "react-router-dom";
+import useAuth from "shared/lib/hooks/useAuth";
 
 export enum AppRoutes {
   MAIN = "main",
@@ -15,17 +16,17 @@ export const RoutePath: Record<AppRoutes, string> = {
   [AppRoutes.REGISTER]: "/register",
 };
 
-export const routeConfig: Record<AppRoutes, RouteProps> = {
+export const routeConfig = (user: any): Record<AppRoutes, RouteProps> => ({
   [AppRoutes.MAIN]: {
     path: RoutePath.main,
-    element: <MainPage />,
+    element: user ? <MainPage /> : <Navigate to="/register" />,
   },
   [AppRoutes.LOGIN]: {
     path: RoutePath.login,
-    element: <LoginPage />,
+    element: user ? <Navigate to="/" /> : <LoginPage />,
   },
   [AppRoutes.REGISTER]: {
     path: RoutePath.register,
-    element: <RegisterPage />,
+    element: user ? <Navigate to="/" /> : <RegisterPage />,
   },
-};
+});

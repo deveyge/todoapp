@@ -1,8 +1,56 @@
 import { useState } from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "shared/config/firebase";
+import { setUser, setLoading, setError, clearError } from "redux/authSlice";
+import { RootState, AppDispatch } from "redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+
+  // const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   dispatch(setLoading(true));
+  //   dispatch(clearError());
+  //   createUserWithEmailAndPassword(auth, email, password)
+  //     .then((userCredential) => {
+  //       // Signed up
+  //       const user = userCredential.user;
+  //       console.log(user);
+  //       // ...
+  //     })
+  //     .catch((error) => {
+  //       const errorCode = error.code;
+  //       const errorMessage = error.message;
+  //       // ..
+  //     });
+  // };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(setLoading(true));
+    dispatch(clearError());
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const user = userCredential.user;
+      dispatch(setUser({ uid: user.uid, email: user.email }));
+      navigate("/");
+    } catch (error: any) {
+      dispatch(setError(error.message));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
 
   return (
     <>
@@ -14,7 +62,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form onSubmit={handleRegister} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium">
                 Email address
@@ -59,10 +107,12 @@ export default function RegisterPage() {
             <div>
               <button
                 type="submit"
-                className="shadow-xs hover:bg-accent flex w-full justify-center rounded-md bg-[var(--primary)] px-3 py-1.5 text-sm/6 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
+                className="shadow-xs flex w-full justify-center rounded-md bg-[var(--primary)] px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
               >
-                Создать аккаунт
+                {isLoading ? "Регистрация..." : "Создать аккаунт"}
               </button>
+
+              {error && <p className="text-red-500">{error}</p>}
             </div>
           </form>
         </div>

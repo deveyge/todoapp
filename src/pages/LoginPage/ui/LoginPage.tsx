@@ -1,8 +1,39 @@
 import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "shared/config/firebase";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "redux/store";
+import { setError, setUser, clearError, setLoading } from "redux/authSlice";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>(); // Типизируем dispatch
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(setLoading(true));
+    dispatch(clearError());
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      const user = userCredential.user;
+      dispatch(setUser({ uid: user.uid, email: user.email }));
+      navigate("/");
+    } catch (error: any) {
+      dispatch(setError(error.message));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
 
   return (
     <>
@@ -14,7 +45,7 @@ export default function LoginPage() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium">
                 Email address
@@ -59,10 +90,13 @@ export default function LoginPage() {
             <div>
               <button
                 type="submit"
-                className="shadow-xs hover:bg-accent flex w-full justify-center rounded-md bg-[var(--primary)] px-3 py-1.5 text-sm/6 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
+                className="shadow-xs flex w-full justify-center rounded-md bg-[var(--primary)] px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)]"
               >
-                Войти
+                {isLoading ? "Вход в систему..." : "Войти"}
               </button>
+              {error && (
+                <p className="text-red-500">Неправильный email или пароль</p>
+              )}
             </div>
           </form>
         </div>
