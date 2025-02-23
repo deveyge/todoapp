@@ -1,9 +1,13 @@
 import React from "react";
 import { trashIcon, checkIcon } from "../../shared/utils/icons";
-function Task() {
+import { Todo } from "app/types/Todo";
+interface TaskItemProps {
+  todo: Todo;
+}
+function Task({ todo }: TaskItemProps) {
   return (
-    <li className="bg-foreground flex items-center justify-between rounded-md px-4 py-6">
-      <p>Task</p>
+    <li className="flex items-center justify-between rounded-md bg-foreground px-4 py-6">
+      <p>{todo.text}</p>
       <div className="flex items-center gap-3">
         <button>{checkIcon}</button>
         <button>{trashIcon}</button>

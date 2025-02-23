@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { db } from 'shared/config/firebase';
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { Todo } from 'app/types/Todo';
 
 interface TodoState {
@@ -17,7 +17,7 @@ const initialState: TodoState = {
 
 
 
-// добавление задачи в firebase
+// добавление задачи в firebase(create)
 export const addTodo = createAsyncThunk<Todo, { text: string, userId: string }>(
   'todos/addTodo',
   async ({ text, userId }: { text: string, userId: string }) => {
@@ -35,6 +35,25 @@ export const addTodo = createAsyncThunk<Todo, { text: string, userId: string }>(
   }
 );
 
+// получение задач из firebase(read)
+export const fetchTodos = createAsyncThunk<Todo[], string>(
+  'todos/fetchTodos',
+  async (userId: string) => {
+    try {
+      const q = query(collection(db, "todos"), where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+      const todos: Todo[] = [];
+      querySnapshot.forEach((doc) => {
+        todos.push({ id: doc.id, ...doc.data() } as Todo);
+      });
+      return todos;
+    } catch (error: any) {
+      console.error("Error fetching todos:", error);
+      throw error;
+    }
+  }
+);
+
 
 const todoSlice = createSlice({
   name: 'todos',
@@ -45,6 +64,18 @@ const todoSlice = createSlice({
     builder
       .addCase(addTodo.fulfilled, (state, action: PayloadAction<Todo>) => {
         state.todos.push(action.payload);
+      })
+      .addCase(fetchTodos.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchTodos.fulfilled, (state, action: PayloadAction<Todo[]>) => {
+        state.isLoading = false;
+        state.todos = action.payload;
+      })
+      .addCase(fetchTodos.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || "Произошла ошибка";
       })
   },
 });

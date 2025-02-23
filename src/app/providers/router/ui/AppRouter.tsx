@@ -8,9 +8,9 @@ import { clearError } from "redux/authSlice";
 import { setUser } from "redux/authSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "shared/config/firebase";
-
+import useAuth from "shared/lib/hooks/useAuth";
 export default function AppRouter() {
-  const { user, isLoading } = useSelector((state: RootState) => state.auth);
+  const { user, isLoading } = useAuth();
   const routes = routeConfig(user);
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
