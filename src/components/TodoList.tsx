@@ -3,7 +3,7 @@ import AddTask from "./Tasks/AddTask";
 import Task from "./Tasks/Task";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchTodos, toggleComplete } from "redux/todoSlice";
+import { fetchTodos, toggleComplete, deleteTodo } from "redux/todoSlice";
 import useAuth from "shared/lib/hooks/useAuth";
 import { useEffect } from "react";
 
@@ -29,6 +29,11 @@ export default function TodoList() {
     dispatch(toggleComplete({ id, completed }));
   };
 
+  // удаление задачи из firebase(delete)
+  const handleDeleteTodo = (id: string) => {
+    dispatch(deleteTodo(id));
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -42,6 +47,7 @@ export default function TodoList() {
               key={todo.id}
               todo={todo}
               onToggleComplete={handleToggleComplete}
+              onDeleteTodo={handleDeleteTodo}
             />
           ))}
         </ul>

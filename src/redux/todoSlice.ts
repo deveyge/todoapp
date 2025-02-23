@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { db } from 'shared/config/firebase';
-import { collection, addDoc, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { Todo } from 'app/types/Todo';
 
 interface TodoState {
@@ -71,6 +71,22 @@ export const toggleComplete = createAsyncThunk<string, { id: string, completed: 
   }
 );
 
+// удаление задачи из firebase(delete)
+export const deleteTodo = createAsyncThunk<string, string>(
+  'todos/deleteTodo',
+  async (id: string) => {
+    try {
+      const todoDoc = doc(db, "todos", id);
+      await deleteDoc(todoDoc);
+      return id; // Возвращаем ID удаленной задачи
+    } catch (error: any) {
+      console.error("Error deleting todo:", error);
+      throw error;
+    }
+  }
+);
+
+
 
 const todoSlice = createSlice({
   name: 'todos',
@@ -101,6 +117,10 @@ const todoSlice = createSlice({
           todo.completed = !todo.completed;
         }
       })
+      .addCase(deleteTodo.fulfilled, (state, action: PayloadAction<string>) => {
+        const id = action.payload;
+        state.todos = state.todos.filter(todo => todo.id !== id);
+      });
   },
 });
 
