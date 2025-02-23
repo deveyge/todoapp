@@ -3,7 +3,7 @@ import AddTask from "./Tasks/AddTask";
 import Task from "./Tasks/Task";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchTodos } from "redux/todoSlice";
+import { fetchTodos, toggleComplete } from "redux/todoSlice";
 import useAuth from "shared/lib/hooks/useAuth";
 import { useEffect } from "react";
 
@@ -15,6 +15,7 @@ export default function TodoList() {
     (state: RootState) => state.todos,
   );
 
+  // получение задач из firebase(read)
   useEffect(() => {
     if (user) {
       dispatch(fetchTodos(user.uid));
@@ -22,6 +23,12 @@ export default function TodoList() {
       navigate("/login");
     }
   }, [dispatch, user, navigate]);
+
+  // обновление статуса задачи в firebase(update)
+  const handleToggleComplete = (id: string, completed: boolean) => {
+    dispatch(toggleComplete({ id, completed }));
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -31,7 +38,11 @@ export default function TodoList() {
         <AddTask />
         <ul>
           {todos.map((todo) => (
-            <Task key={todo.id} todo={todo} />
+            <Task
+              key={todo.id}
+              todo={todo}
+              onToggleComplete={handleToggleComplete}
+            />
           ))}
         </ul>
       </div>

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { db } from 'shared/config/firebase';
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { Todo } from 'app/types/Todo';
 
 interface TodoState {
@@ -54,6 +54,23 @@ export const fetchTodos = createAsyncThunk<Todo[], string>(
   }
 );
 
+// обновление статуса задачи в firebase(update)
+export const toggleComplete = createAsyncThunk<string, { id: string, completed: boolean }>(
+  'todos/toggleComplete',
+  async ({ id, completed }: { id: string, completed: boolean }) => {
+    try {
+      const todoDoc = doc(db, "todos", id);
+      await updateDoc(todoDoc, {
+        completed: !completed
+      });
+      return id;
+    } catch (error: any) {
+      console.error("Error updating todo:", error);
+      throw error;
+    }
+  }
+);
+
 
 const todoSlice = createSlice({
   name: 'todos',
@@ -76,6 +93,13 @@ const todoSlice = createSlice({
       .addCase(fetchTodos.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || "Произошла ошибка";
+      })
+      .addCase(toggleComplete.fulfilled, (state, action: PayloadAction<string>) => {
+        const id = action.payload;
+        const todo = state.todos.find(todo => todo.id === id);
+        if (todo) {
+          todo.completed = !todo.completed;
+        }
       })
   },
 });
