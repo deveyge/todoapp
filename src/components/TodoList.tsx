@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchTodos, toggleComplete, deleteTodo } from "redux/todoSlice";
 import useAuth from "shared/lib/hooks/useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Modal from "shared/ui/Modal";
 
 export default function TodoList() {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ export default function TodoList() {
   const { todos, isLoading, error } = useSelector(
     (state: RootState) => state.todos,
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
 
   // получение задач из firebase(read)
   useEffect(() => {
@@ -29,9 +32,23 @@ export default function TodoList() {
     dispatch(toggleComplete({ id, completed }));
   };
 
-  // удаление задачи из firebase(delete)
-  const handleDeleteTodo = (id: string) => {
-    dispatch(deleteTodo(id));
+  //логика модального окна
+  const handleOpenModal = (id: string) => {
+    setTodoToDelete(id);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTodoToDelete(null);
+  };
+
+  // подтверждение удаления задачи из firebase(delete)
+  const handleConfirmDelete = () => {
+    if (todoToDelete) {
+      dispatch(deleteTodo(todoToDelete));
+      handleCloseModal();
+    }
   };
 
   if (isLoading) {
@@ -47,10 +64,17 @@ export default function TodoList() {
               key={todo.id}
               todo={todo}
               onToggleComplete={handleToggleComplete}
-              onDeleteTodo={handleDeleteTodo}
+              onDeleteTodo={handleOpenModal}
             />
           ))}
         </ul>
+        <Modal
+          isOpen={isModalOpen}
+          onCancel={handleCloseModal}
+          onConfirm={handleConfirmDelete}
+          title="Удалить задачу?"
+          message="Вы действительно хотите удалить задачу?"
+        />
       </div>
     </div>
   );
