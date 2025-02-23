@@ -7,7 +7,7 @@ import { fetchTodos, toggleComplete, deleteTodo } from "redux/todoSlice";
 import useAuth from "shared/lib/hooks/useAuth";
 import { useEffect, useState } from "react";
 import Modal from "shared/ui/Modal";
-
+import SmallPreloader from "shared/ui/SmallPreloader";
 export default function TodoList() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
@@ -52,13 +52,14 @@ export default function TodoList() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <SmallPreloader />;
   }
+
   return (
     <div className="mx-auto mt-5 flex flex-col px-6 py-12">
       <div className="flex flex-col gap-4 sm:mx-auto sm:w-full sm:max-w-md">
         <AddTask />
-        <ul>
+        <ul className="flex flex-col gap-4">
           {todos.map((todo) => (
             <Task
               key={todo.id}

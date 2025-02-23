@@ -17,7 +17,9 @@ function Task({ todo, onToggleComplete, onDeleteTodo }: TaskItemProps) {
           {todo.completed ? checkIcon : <div className="h-[22px] w-[22px]" />}
         </button>
 
-        <p>{todo.text}</p>
+        <p className={`${todo.completed ? "text-gray-600 line-through" : ""}`}>
+          {todo.text}
+        </p>
       </div>
       <div className="flex items-center gap-3">
         <button className="rounded-md bg-primary p-1">{editIcon}</button>
