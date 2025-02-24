@@ -67,13 +67,6 @@
     --text-secondary: #AAAAAA;
   }
 }
-
-/* @layer base {
-
-  body {
-    @apply bg-bg-primary;
-  }
-} */
  
 body {
   @apply font-sans;

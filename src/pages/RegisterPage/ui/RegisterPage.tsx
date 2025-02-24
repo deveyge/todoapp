@@ -13,24 +13,6 @@ export default function RegisterPage() {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, error } = useSelector((state: RootState) => state.auth);
 
-  // const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   dispatch(setLoading(true));
-  //   dispatch(clearError());
-  //   createUserWithEmailAndPassword(auth, email, password)
-  //     .then((userCredential) => {
-  //       // Signed up
-  //       const user = userCredential.user;
-  //       console.log(user);
-  //       // ...
-  //     })
-  //     .catch((error) => {
-  //       const errorCode = error.code;
-  //       const errorMessage = error.message;
-  //       // ..
-  //     });
-  // };
-
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(setLoading(true));
@@ -65,7 +47,7 @@ export default function RegisterPage() {
           <form onSubmit={handleRegister} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium">
-                Email address
+                Email адрес
               </label>
               <div className="mt-2">
                 <input
@@ -87,7 +69,7 @@ export default function RegisterPage() {
                   htmlFor="password"
                   className="block text-sm/6 font-medium"
                 >
-                  Password
+                  Пароль
                 </label>
               </div>
               <div className="mt-2">

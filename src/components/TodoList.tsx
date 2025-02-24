@@ -12,9 +12,7 @@ export default function TodoList() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useAuth();
-  const { todos, isLoading, error } = useSelector(
-    (state: RootState) => state.todos,
-  );
+  const { todos, isLoading } = useSelector((state: RootState) => state.todos);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState<string | null>(null);
 

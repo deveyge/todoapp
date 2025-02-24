@@ -1,5 +1,3 @@
-import UseTheme from "app/providers/ThemeProvider/lib/UseTheme";
-import React from "react";
 import { Link } from "react-router-dom";
 import { ThemeSwitcher } from "shared/ThemeSwitcher";
 import LogoutBtn from "./Auth/LogoutBtn";

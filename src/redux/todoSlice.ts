@@ -78,7 +78,7 @@ export const deleteTodo = createAsyncThunk<string, string>(
     try {
       const todoDoc = doc(db, "todos", id);
       await deleteDoc(todoDoc);
-      return id; // Возвращаем ID удаленной задачи
+      return id;
     } catch (error: any) {
       console.error("Error deleting todo:", error);
       throw error;
